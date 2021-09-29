@@ -12,7 +12,12 @@ type Player struct {
 	Img *ebiten.Image
 	PlayX float64
 	PlayY float64
-	
+}
+
+func (p *Player) PlayerUpdate(screen *ebiten.Image) {
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate( p.PlayX, p.PlayY)
+    screen.DrawImage(p.Img, op)
 }
 
 func (p *Player) GetPosX() float64 {
