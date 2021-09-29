@@ -4,24 +4,21 @@ import (
 	_ "image/png"
 	"log"
 
+	entities "hra/entities"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type Player struct {
-	img *ebiten.Image
-	playX float64
-	playY float64
-}
 // Game implements ebiten.Game interface.
 type Game struct{
-	player *Player
+	player *entities.Player
 }
 
 const screenWidth int = 900
 const screenHeight int = 600
-const playerWidthAndHeight int = 64
+
 
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
@@ -29,15 +26,19 @@ func (g *Game) Update() error {
 
 	for _ , k := range inpututil.PressedKeys() {
 		if k == ebiten.KeyRight {
-			g.player.playX += 1
-			if float64(g.player.playX) + float64(playerWidthAndHeight) > float64(screenWidth){
-				g.player.playX = float64(screenWidth) - float64(playerWidthAndHeight)
+			old_pos := g.player.GetPosX()
+			newPos := old_pos + 1
+			g.player.SetPosX(newPos)
+			if g.player.GetPosX() + float64(g.player.GetPlayerWidthAndHeight()) > float64(screenWidth) {
+				g.player.SetPosX(float64(screenWidth) - float64(g.player.GetPlayerWidthAndHeight()))
 			}
 		}
 		if k == ebiten.KeyLeft {
-			g.player.playX += -1
-			if float64(g.player.playX) <= 0 {
-				g.player.playX = 0 
+			old_pos := g.player.GetPosX()
+			newPos := old_pos + -1
+			g.player.SetPosX(newPos)
+			if g.player.GetPosX() <= 0 {
+				g.player.SetPosX(0) 
 			}
 		}
 	}
@@ -51,8 +52,8 @@ func (g *Game) Update() error {
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate( g.player.playX, g.player.playY)
-    screen.DrawImage(g.player.img, op)
+	op.GeoM.Translate( g.player.PlayX, g.player.PlayY)
+    screen.DrawImage(g.player.Img, op)
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
@@ -68,13 +69,13 @@ func main() {
 			log.Fatal(err)
 	}
 	
-	player := Player{img: img, playX: float64(screenWidth / 2) - float64(playerWidthAndHeight /2), playY: float64(screenHeight / 2) - float64(playerWidthAndHeight /2) }
+	player := entities.Player{Img: img, PlayX: float64(screenWidth / 2) - float64(game.player.GetPlayerWidthAndHeight() /2), PlayY: float64(screenHeight / 2) - float64(game.player.GetPlayerWidthAndHeight() /2) }
 
 	game.player = &player
 
     // Specify the window size as you like. Here, a doubled size is specified.
     ebiten.SetWindowSize(screenWidth, screenHeight)
-    ebiten.SetWindowTitle("Your game's title")
+    ebiten.SetWindowTitle("Spaceship")
 
 
 
