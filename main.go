@@ -8,23 +8,34 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 // Game implements ebiten.Game interface.
 type Game struct{}
 
+var background *ebiten.Image
 var player *entities.Player
 var bullet *entities.Bullet
 var enemy *entities.Enemy
 const screenWidth int = 900
 const screenHeight int = 600
-
+var op *ebiten.DrawImageOptions
 
 var bullets []*entities.Bullet
 
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
+
+
+
+func init() {
+	background , _, _ = ebitenutil.NewImageFromFile("./background.png")
+	op = &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(-300,0)
+}
+
 func (g *Game) Update() error {
 
 	for _ , k := range inpututil.PressedKeys() {
@@ -53,12 +64,9 @@ func (g *Game) Update() error {
 			bullet.Y = bullet.Y - 1
 		} 
 		
-		colide := uttils.CalucateDistance(bullet.X, bullet.Y, player.PlayX, player.PlayY)
-		fmt.Println(colide)
+		collide := uttils.CalucateDistance(bullet.X, bullet.Y, player.PlayX, player.PlayY)
+		fmt.Println(collide)
 	}
-
-	
-
 
     return nil
 }
@@ -68,6 +76,11 @@ func (g *Game) Update() error {
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
+
+
+	//op.GeoM.Scale(0.6,0.6)
+	screen.DrawImage(background, op)
+
 	player.Draw(screen)
 	enemy.Draw(screen)
 	
