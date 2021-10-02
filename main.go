@@ -25,17 +25,14 @@ func (g *Game) Update() error {
 
 	for _ , k := range inpututil.PressedKeys() {
 		if k == ebiten.KeyRight {
-			old_pos := player.PlayX
-			newPos := old_pos + 1
-			player.PlayX = newPos
+			player.PlayX = player.PlayX + 1
 			if player.PlayX + float64(player.GetPlayerWidthAndHeight()) > float64(screenWidth) {
 				player.PlayX = float64(screenWidth) - float64(player.GetPlayerWidthAndHeight())
 			}
 		}
 		if k == ebiten.KeyLeft {
-			old_pos := player.PlayX
-			newPos := old_pos + -1
-			player.PlayX = newPos
+	
+			player.PlayX = player.PlayX + -1
 			if player.PlayX <= 0 {
 				player.PlayX = 0 
 			}
