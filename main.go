@@ -12,9 +12,7 @@ import (
 )
 
 // Game implements ebiten.Game interface.
-type Game struct{
-	
-}
+type Game struct{}
 
 var player *entities.Player
 const screenWidth int = 900
@@ -27,19 +25,19 @@ func (g *Game) Update() error {
 
 	for _ , k := range inpututil.PressedKeys() {
 		if k == ebiten.KeyRight {
-			old_pos := player.GetPosX()
+			old_pos := player.PlayX
 			newPos := old_pos + 1
-			player.SetPosX(newPos)
-			if player.GetPosX() + float64(player.GetPlayerWidthAndHeight()) > float64(screenWidth) {
-				player.SetPosX(float64(screenWidth) - float64(player.GetPlayerWidthAndHeight()))
+			player.PlayX = newPos
+			if player.PlayX + float64(player.GetPlayerWidthAndHeight()) > float64(screenWidth) {
+				player.PlayX = float64(screenWidth) - float64(player.GetPlayerWidthAndHeight())
 			}
 		}
 		if k == ebiten.KeyLeft {
-			old_pos := player.GetPosX()
+			old_pos := player.PlayX
 			newPos := old_pos + -1
-			player.SetPosX(newPos)
-			if player.GetPosX() <= 0 {
-				player.SetPosX(0) 
+			player.PlayX = newPos
+			if player.PlayX <= 0 {
+				player.PlayX = 0 
 			}
 		}
 	}
@@ -68,9 +66,12 @@ func main() {
 			log.Fatal(err)
 	}
 	
-	player = &entities.Player{Img: img, PlayX: float64(screenWidth / 2) - float64(player.GetPlayerWidthAndHeight() /2), PlayY: float64(screenHeight / 2) - float64(player.GetPlayerWidthAndHeight() /2) }
+	player = &entities.Player{
+		Img: img,
+		PlayX: float64(screenWidth / 2) - float64(player.GetPlayerWidthAndHeight() /2),
+		PlayY: float64(screenHeight / 2) - float64(player.GetPlayerWidthAndHeight() /2), 
+		}
 
-	
 
     // Specify the window size as you like. Here, a doubled size is specified.
     ebiten.SetWindowSize(screenWidth, screenHeight)
