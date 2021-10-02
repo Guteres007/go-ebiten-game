@@ -13,9 +13,10 @@ import (
 
 // Game implements ebiten.Game interface.
 type Game struct{
-	player *entities.Player
+	
 }
 
+var player *entities.Player
 const screenWidth int = 900
 const screenHeight int = 600
 
@@ -26,19 +27,19 @@ func (g *Game) Update() error {
 
 	for _ , k := range inpututil.PressedKeys() {
 		if k == ebiten.KeyRight {
-			old_pos := g.player.GetPosX()
+			old_pos := player.GetPosX()
 			newPos := old_pos + 1
-			g.player.SetPosX(newPos)
-			if g.player.GetPosX() + float64(g.player.GetPlayerWidthAndHeight()) > float64(screenWidth) {
-				g.player.SetPosX(float64(screenWidth) - float64(g.player.GetPlayerWidthAndHeight()))
+			player.SetPosX(newPos)
+			if player.GetPosX() + float64(player.GetPlayerWidthAndHeight()) > float64(screenWidth) {
+				player.SetPosX(float64(screenWidth) - float64(player.GetPlayerWidthAndHeight()))
 			}
 		}
 		if k == ebiten.KeyLeft {
-			old_pos := g.player.GetPosX()
+			old_pos := player.GetPosX()
 			newPos := old_pos + -1
-			g.player.SetPosX(newPos)
-			if g.player.GetPosX() <= 0 {
-				g.player.SetPosX(0) 
+			player.SetPosX(newPos)
+			if player.GetPosX() <= 0 {
+				player.SetPosX(0) 
 			}
 		}
 	}
@@ -51,7 +52,7 @@ func (g *Game) Update() error {
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.player.PlayerUpdate(screen)
+	player.PlayerUpdate(screen)
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
@@ -67,9 +68,9 @@ func main() {
 			log.Fatal(err)
 	}
 	
-	player := entities.Player{Img: img, PlayX: float64(screenWidth / 2) - float64(game.player.GetPlayerWidthAndHeight() /2), PlayY: float64(screenHeight / 2) - float64(game.player.GetPlayerWidthAndHeight() /2) }
+	player = &entities.Player{Img: img, PlayX: float64(screenWidth / 2) - float64(player.GetPlayerWidthAndHeight() /2), PlayY: float64(screenHeight / 2) - float64(player.GetPlayerWidthAndHeight() /2) }
 
-	game.player = &player
+	
 
     // Specify the window size as you like. Here, a doubled size is specified.
     ebiten.SetWindowSize(screenWidth, screenHeight)
