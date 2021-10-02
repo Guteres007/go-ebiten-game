@@ -15,7 +15,7 @@ type Bullet struct {
 
 func NewBullet(x float64, y float64) *Bullet {
 	
-	img, _, err := ebitenutil.NewImageFromFile("spaceship.png")
+	img, _, err := ebitenutil.NewImageFromFile("bullet.png")
 	if err != nil {
 		log.Fatal(err)
 	}

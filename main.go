@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	entities "hra/entities"
+	"hra/uttils"
 	_ "image/png"
 	"log"
 
@@ -37,25 +39,29 @@ func (g *Game) Update() error {
 				player.PlayX = 0 
 			}
 		}
-
-			
-		if  k == ebiten.KeySpace {
-			bullet = entities.NewBullet(player.PlayX, player.PlayY)
-			bullets = append(bullets, bullet)
-		}
-		
-
 	}
 
+	
+	if  inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		bullet = entities.NewBullet(player.PlayX, player.PlayY)
+		bullets = append(bullets, bullet)
+	}
 
 	if len(bullets) > 0 {
 		for _, bullet := range bullets {
 			bullet.Y = bullet.Y - 1
 		} 
+		
+		colide := uttils.CalucateDistance(bullet.X, bullet.Y, player.PlayX, player.PlayY)
+		fmt.Println(colide)
 	}
+
+	
+
 
     return nil
 }
+
 
 
 // Draw draws the game screen.
