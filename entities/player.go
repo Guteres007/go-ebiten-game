@@ -2,37 +2,35 @@ package entities
 
 import (
 	_ "image/png"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 const playerWidthAndHeight int = 64
-
 type Player struct {
-	Img *ebiten.Image
+	img *ebiten.Image
 	PlayX float64
 	PlayY float64
 }
 
+func NewPlayer(x float64, y float64) *Player {
+	img , _, err := ebitenutil.NewImageFromFile("./spaceship.png")
+	if err != nil {
+			log.Fatal(err)
+	}
+	return &Player{
+		img: img,
+		PlayX: x,
+		PlayY: y,
+	}
+}
+
 func (p *Player) PlayerUpdate(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate( p.PlayX, p.PlayY)
-    screen.DrawImage(p.Img, op)
-}
-
-func (p *Player) GetPosX() float64 {
-	return p.PlayX
-}
-
-func (p *Player) GetPosY() float64 {
-	return p.PlayY
-}
-
-func (p *Player) SetPosX(newPosition float64)  {
-	p.PlayX = newPosition
-}
-func (p *Player) SetPosY(newPosition float64)  {
-	p.PlayY = newPosition
+	op.GeoM.Translate(p.PlayX, p.PlayY)
+    screen.DrawImage(p.img, op)
 }
 
 func (p *Player) GetPlayerWidthAndHeight() int {
