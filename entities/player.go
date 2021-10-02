@@ -27,7 +27,7 @@ func NewPlayer(x float64, y float64) *Player {
 	}
 }
 
-func (p *Player) PlayerUpdate(screen *ebiten.Image) {
+func (p *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(p.PlayX, p.PlayY)
     screen.DrawImage(p.img, op)

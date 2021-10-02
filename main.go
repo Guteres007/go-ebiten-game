@@ -16,6 +16,7 @@ type Game struct{}
 
 var player *entities.Player
 var bullet *entities.Bullet
+var enemy *entities.Enemy
 const screenWidth int = 900
 const screenHeight int = 600
 
@@ -67,7 +68,8 @@ func (g *Game) Update() error {
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
-	player.PlayerUpdate(screen)
+	player.Draw(screen)
+	enemy.Draw(screen)
 	
 	for _, bullet := range bullets {
 		bullet.Draw(screen)
@@ -85,7 +87,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 func main() {
 	game := &Game{}
 	player = entities.NewPlayer(float64(screenWidth / 2) - float64(player.GetPlayerWidthAndHeight() /2), float64(screenHeight / 2) - float64(player.GetPlayerWidthAndHeight() /2) )
-	
+	enemy = entities.NewEnemy(20, 20)
 
     // Specify the window size as you like. Here, a doubled size is specified.
     ebiten.SetWindowSize(screenWidth, screenHeight)
