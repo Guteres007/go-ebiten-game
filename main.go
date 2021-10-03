@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	entities "hra/entities"
 	"hra/uttils"
 	_ "image/png"
@@ -33,6 +32,8 @@ var bullets []*entities.Bullet
 func init() {
 	background , _, _ = ebitenutil.NewImageFromFile("./background.png")
 	op = &ebiten.DrawImageOptions{}
+	
+	op.GeoM.Scale(0.6,0.6)
 	op.GeoM.Translate(-300,0)
 }
 
@@ -60,25 +61,34 @@ func (g *Game) Update() error {
 	}
 
 	if len(bullets) > 0 {
-		for _, bullet := range bullets {
+		for i, bullet := range bullets {
 			bullet.Y = bullet.Y - 1
+			colide := uttils.CalucateDistance(bullet.X, bullet.Y, enemy.X, enemy.Y)
+			x,y := enemy.Img.Size()
+			if x >= int(colide) || y >= int(colide)  {
+				bullets = RemoveIndex(bullets, i)
+			
+				println( bullets )
+			}
+			
+
 		} 
 		
-		collide := uttils.CalucateDistance(bullet.X, bullet.Y, player.PlayX, player.PlayY)
-		fmt.Println(collide)
+	
 	}
 
     return nil
 }
 
-
+func RemoveIndex(s []*entities.Bullet, index int) []*entities.Bullet {
+	return append(s[:index], s[index+1:]...)
+}
 
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
 
 
-	//op.GeoM.Scale(0.6,0.6)
 	screen.DrawImage(background, op)
 
 	player.Draw(screen)
@@ -100,7 +110,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 func main() {
 	game := &Game{}
 	player = entities.NewPlayer(float64(screenWidth / 2) - float64(player.GetPlayerWidthAndHeight() /2), float64(screenHeight / 2) - float64(player.GetPlayerWidthAndHeight() /2) )
-	enemy = entities.NewEnemy(20, 20)
+	enemy = entities.NewEnemy(300.0, 20.0)
 
     // Specify the window size as you like. Here, a doubled size is specified.
     ebiten.SetWindowSize(screenWidth, screenHeight)
