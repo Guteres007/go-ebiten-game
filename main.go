@@ -2,6 +2,7 @@ package main
 
 import (
 	entities "hra/entities"
+	listeners "hra/listeners"
 	"hra/uttils"
 	_ "image/png"
 	"log"
@@ -21,7 +22,6 @@ var enemy *entities.Enemy
 const screenWidth int = 900
 const screenHeight int = 600
 var op *ebiten.DrawImageOptions
-
 var bullets []*entities.Bullet
 
 // Update proceeds the game state.
@@ -39,21 +39,7 @@ func init() {
 
 func (g *Game) Update() error {
 
-	for _ , k := range inpututil.PressedKeys() {
-		if k == ebiten.KeyRight {
-			player.PlayX = player.PlayX + 1
-			if player.PlayX + float64(player.GetPlayerWidthAndHeight()) > float64(screenWidth) {
-				player.PlayX = float64(screenWidth) - float64(player.GetPlayerWidthAndHeight())
-			}
-		}
-		if k == ebiten.KeyLeft {
-			player.PlayX = player.PlayX + -1
-			if player.PlayX <= 0 {
-				player.PlayX = 0 
-			}
-		}
-	}
-
+	listeners.PlayerMoving(player)
 	
 	if  inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		bullet = entities.NewBullet(player.PlayX, player.PlayY)
