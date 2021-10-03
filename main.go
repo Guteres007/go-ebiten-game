@@ -66,12 +66,13 @@ func (g *Game) Update() error {
 			colide := uttils.CalucateDistance(bullet.X, bullet.Y, enemy.X, enemy.Y)
 			x,y := enemy.Img.Size()
 			if x >= int(colide) || y >= int(colide)  {
-				bullets = RemoveIndex(bullets, i)
-			
-				println( bullets )
+				bullets = bullet.RemoveBullet(bullets, i)
+			}
+			//budeli mimo screen
+			if int(bullet.Y) <= 0  {
+				bullets = bullet.RemoveBullet(bullets, i)
 			}
 			
-
 		} 
 		
 	
@@ -80,9 +81,7 @@ func (g *Game) Update() error {
     return nil
 }
 
-func RemoveIndex(s []*entities.Bullet, index int) []*entities.Bullet {
-	return append(s[:index], s[index+1:]...)
-}
+
 
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
@@ -109,8 +108,8 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func main() {
 	game := &Game{}
-	player = entities.NewPlayer(float64(screenWidth / 2) - float64(player.GetPlayerWidthAndHeight() /2), float64(screenHeight / 2) - float64(player.GetPlayerWidthAndHeight() /2) )
-	enemy = entities.NewEnemy(300.0, 20.0)
+	player = entities.NewPlayer(float64(screenWidth / 2) - float64(player.GetPlayerWidthAndHeight() /2), float64(screenHeight) - float64(player.GetPlayerWidthAndHeight() + 20) )
+	enemy = entities.NewEnemy(400.0, 20.0)
 
     // Specify the window size as you like. Here, a doubled size is specified.
     ebiten.SetWindowSize(screenWidth, screenHeight)

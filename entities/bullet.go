@@ -25,6 +25,10 @@ func NewBullet(x float64, y float64) *Bullet {
 
 func (b *Bullet) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(b.X, b.Y)
+	op.GeoM.Translate(b.X + 24, b.Y)
     screen.DrawImage(b.img, op)
+}
+
+func (b *Bullet) RemoveBullet(s []*Bullet, index int) []*Bullet {
+	return append(s[:index], s[index+1:]...)
 }
