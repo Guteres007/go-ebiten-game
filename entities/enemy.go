@@ -10,6 +10,8 @@ import (
 type Enemy struct {
 	X, Y float64
 	Img  *ebiten.Image
+	Op *ebiten.DrawImageOptions
+	
 }
 
 func NewEnemy(x float64, y float64) *Enemy {
@@ -21,7 +23,7 @@ func NewEnemy(x float64, y float64) *Enemy {
 }
 
 func (e *Enemy) Draw(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(e.X, e.Y)
-    screen.DrawImage(e.Img, op)
+	e.Op = &ebiten.DrawImageOptions{}
+	e.Op.GeoM.Translate(e.X, e.Y)
+    screen.DrawImage(e.Img, e.Op)
 }

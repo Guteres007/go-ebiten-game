@@ -10,8 +10,10 @@ import (
 type Bullet struct {
 	X, Y float64
 	img  *ebiten.Image
+	Op *ebiten.DrawImageOptions
 }
 
+var Op ebiten.DrawImageOptions 
 
 func NewBullet(x float64, y float64) *Bullet {
 	
@@ -19,14 +21,16 @@ func NewBullet(x float64, y float64) *Bullet {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &Bullet{x,y,img}
+	
+	return &Bullet{x,y,img, &ebiten.DrawImageOptions{}}
 }
 
 
 func (b *Bullet) Draw(screen *ebiten.Image) {
-	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(b.X + 24, b.Y)
-    screen.DrawImage(b.img, op)
+	b.Op = &ebiten.DrawImageOptions{}
+	//b.Op = &ebiten.DrawImageOptions{}
+	b.Op.GeoM.Translate(b.X + 16, b.Y)
+    screen.DrawImage(b.img, b.Op)
 }
 
 func (b *Bullet) RemoveBullet(s []*Bullet, index int) []*Bullet {

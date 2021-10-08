@@ -1,19 +1,27 @@
 package main
 
 import (
+	"fmt"
 	entities "hra/entities"
 	listeners "hra/listeners"
-	"hra/uttils"
+	"image/color"
 	_ "image/png"
 	"log"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/examples/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
 
 // Game implements ebiten.Game interface.
-type Game struct{}
+type Game struct{
+	counter        int
+}
 
 var background *ebiten.Image
 var player *entities.Player
@@ -27,9 +35,34 @@ var bullets []*entities.Bullet
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
 
-
+const sampleText = `The quick brown fox jumps over the lazy dog.`
+var (
+	mplusNormalFont font.Face
+	mplusBigFont    font.Face
+)
 
 func init() {
+
+	tt, err := opentype.Parse(fonts.MPlus1pRegular_ttf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	const dpi = 72
+	mplusNormalFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    24,
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	mplusBigFont, err = opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    48,
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+
 	background , _, _ = ebitenutil.NewImageFromFile("./background.png")
 	op = &ebiten.DrawImageOptions{}
 	
@@ -49,9 +82,11 @@ func (g *Game) Update() error {
 	if len(bullets) > 0 {
 		for i, bullet := range bullets {
 			bullet.Y = bullet.Y - 1
-			colide := uttils.CalucateDistance(bullet.X, bullet.Y, enemy.X, enemy.Y)
-			x,y := enemy.Img.Size()
-			if x >= int(colide) || y >= int(colide)  {
+			//colide := uttils.CalucateDistance(bullet.X / 2, bullet.Y/ 2, enemy.X/ 2, enemy.Y/ 2)
+			
+			
+			if  ( math.Abs( enemy.Op.GeoM.Element(1,2) - bullet.Op.GeoM.Element(1,2) + 64)) <= 0  &&
+			 ( (bullet.Op.GeoM.Element(0,2) - enemy.Op.GeoM.Element(0,2)) > 0 && (bullet.Op.GeoM.Element(0,2) - enemy.Op.GeoM.Element(0,2)) < 64) {
 				bullets = bullet.RemoveBullet(bullets, i)
 			}
 			//budeli mimo screen
@@ -78,6 +113,11 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	player.Draw(screen)
 	enemy.Draw(screen)
+	msg := fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS())
+	text.Draw(screen, msg, mplusNormalFont, 20, 40, color.White)
+
+	// Draw the sample text
+	text.Draw(screen, sampleText, mplusNormalFont, 90, 80, color.White)
 	
 	for _, bullet := range bullets {
 		bullet.Draw(screen)
@@ -106,3 +146,5 @@ func main() {
         log.Fatal(err)
     }
 }
+
+
