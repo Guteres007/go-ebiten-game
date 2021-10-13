@@ -73,6 +73,7 @@ func init() {
 func (g *Game) Update() error {
 
 	listeners.PlayerMoving(player)
+	enemy.Moving()
 	
 	if  inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		bullet = entities.NewBullet(player.PlayX, player.PlayY)
