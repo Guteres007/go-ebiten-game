@@ -82,18 +82,14 @@ func (g *Game) Update() error {
 
 	if len(bullets) > 0 {
 		for i, bullet := range bullets {
-			bullet.Y = bullet.Y - 1
-			//colide := uttils.CalucateDistance(bullet.X / 2, bullet.Y/ 2, enemy.X/ 2, enemy.Y/ 2)
-			
-			
-			if  ( math.Abs( enemy.Op.GeoM.Element(1,2) - bullet.Op.GeoM.Element(1,2) + 64)) <= 0  &&
-			 ( (bullet.Op.GeoM.Element(0,2) - enemy.Op.GeoM.Element(0,2)) > 0 && (bullet.Op.GeoM.Element(0,2) - enemy.Op.GeoM.Element(0,2)) < 64) {
-				bullets = bullet.RemoveBullet(bullets, i)
-			}
+
+			//tady by měl být nějaký update bullet function
+			bullet.Update()
+				
+			//collision detection (hit) pro bullet 
+			collisonDetect(i, enemy, bullet)
 			//budeli mimo screen
-			if int(bullet.Y) <= 0  {
-				bullets = bullet.RemoveBullet(bullets, i)
-			}
+			
 			
 		} 
 		
@@ -149,3 +145,14 @@ func main() {
 }
 
 
+
+func collisonDetect(i int, enemy *entities.Enemy, bullet *entities.Bullet) {
+	if  ( math.Abs( enemy.Op.GeoM.Element(1,2) - bullet.Op.GeoM.Element(1,2) + 64) ) <= 0  &&
+			 ( (bullet.Op.GeoM.Element(0,2) - enemy.Op.GeoM.Element(0,2)) > 0 && (bullet.Op.GeoM.Element(0,2) - enemy.Op.GeoM.Element(0,2)) < 64) {
+				bullets = bullet.RemoveBullet(bullets, i)
+			}
+
+	if int(bullet.Y) <= 0  {
+		bullets = bullet.RemoveBullet(bullets, i)
+	}
+}

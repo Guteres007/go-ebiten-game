@@ -7,10 +7,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
+
 type Bullet struct {
 	X, Y float64
 	img  *ebiten.Image
 	Op *ebiten.DrawImageOptions
+	speed float64 
 }
 
 var Op ebiten.DrawImageOptions 
@@ -22,7 +24,7 @@ func NewBullet(x float64, y float64) *Bullet {
 		log.Fatal(err)
 	}
 	
-	return &Bullet{x,y,img, &ebiten.DrawImageOptions{}}
+	return &Bullet{x,y,img, &ebiten.DrawImageOptions{}, 3}
 }
 
 
@@ -31,6 +33,10 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 	//b.Op = &ebiten.DrawImageOptions{}
 	b.Op.GeoM.Translate(b.X + 16, b.Y)
     screen.DrawImage(b.img, b.Op)
+}
+
+func (e *Bullet) Update() {
+	e.Y = e.Y - 1 * e.speed
 }
 
 func (b *Bullet) RemoveBullet(s []*Bullet, index int) []*Bullet {
