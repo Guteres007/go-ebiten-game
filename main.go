@@ -87,8 +87,11 @@ func (g *Game) Update() error {
 			bullet.Update()
 				
 			//collision detection (hit) pro bullet 
-			collisonDetect(i, enemy, bullet)
+			colide := collisonDetect(i, enemy, bullet)
 			//budeli mimo screen
+			if colide {
+				g.counter = g.counter + 1
+			}
 			
 			
 		} 
@@ -110,7 +113,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	player.Draw(screen)
 	enemy.Draw(screen)
-	msg := fmt.Sprintf("TPS: %0.2f", ebiten.CurrentTPS())
+	msg := fmt.Sprintf("Score: %d", g.counter)
 	text.Draw(screen, msg, mplusNormalFont, 20, 40, color.White)
 
 	// Draw the sample text
@@ -130,7 +133,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func main() {
-	game := &Game{}
+	game := &Game{counter: 0}
 	player = entities.NewPlayer(float64(screenWidth / 2) - float64(player.GetPlayerWidthAndHeight() /2), float64(screenHeight) - float64(player.GetPlayerWidthAndHeight() + 20) )
 	enemy = entities.NewEnemy(400.0, 20.0)
 
@@ -146,13 +149,15 @@ func main() {
 
 
 
-func collisonDetect(i int, enemy *entities.Enemy, bullet *entities.Bullet) {
+func collisonDetect(i int, enemy *entities.Enemy, bullet *entities.Bullet) bool {
 	if  ( math.Abs( enemy.Op.GeoM.Element(1,2) - bullet.Op.GeoM.Element(1,2) + 64) ) <= 0  &&
 			 ( (bullet.Op.GeoM.Element(0,2) - enemy.Op.GeoM.Element(0,2)) > 0 && (bullet.Op.GeoM.Element(0,2) - enemy.Op.GeoM.Element(0,2)) < 64) {
 				bullets = bullet.RemoveBullet(bullets, i)
+				return true
 			}
 
 	if int(bullet.Y) <= 0  {
 		bullets = bullet.RemoveBullet(bullets, i)
 	}
+	return false
 }
